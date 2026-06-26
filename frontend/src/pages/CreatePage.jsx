@@ -18,7 +18,7 @@ const CreatePage = () => {
             return;
         }
         try {
-             const sendRequest = await api.post("api/notes", {
+             const sendRequest = await api.post("/notes", {
                 title,
                 content
             })

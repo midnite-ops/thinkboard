@@ -3,10 +3,10 @@ import { Redis } from "@upstash/redis"
 import dotenv from "dotenv"
 
 dotenv.config()
- //This ratelimiter allows 100 requests in one minute
+ //This ratelimiter allows 10 requests in one 20s
 const rateLimit = new Ratelimit({
     redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(100, "60 s")
+    limiter: Ratelimit.slidingWindow(10, "20 s")
 })
 
 export default rateLimit 

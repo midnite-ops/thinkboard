@@ -1,73 +1,71 @@
-import { ArrowLeftIcon, Trash2Icon, LoaderIcon } from "lucide-react"
-import { Link, useNavigate, useParams } from "react-router"
-import api from "../lib/axios"
-import { useState } from "react"
-import { useEffect } from "react"
-import toast from "react-hot-toast"
+import { ArrowLeftIcon, Trash2Icon, LoaderIcon } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router";
+import api from "../lib/axios";
+import { useState } from "react";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 const NoteDetailPage = () => {
-    const [note, setNote] = useState(null);
-    const [loading, setLoading] = useState(true)
-    const [saving, setSaving] = useState(false)
+  const [note, setNote] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-    const {id} = useParams()
-    const navigate = useNavigate()
-    
-    useEffect(() => {
-        const fetchNote = async () => {
-            try {
-                const res = await api.get(`/notes/${id}`)
-                setNote(res.data)
-            } catch (error) {
-                console.log("error in fetching note", error)
-                toast.error("Failed to fetch the note")
-            }finally{
-                setLoading(false)
-            }
-        }
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-        fetchNote()
-    },[])
-   
-    
-    const handleSave = async () => {
-        if(!note.content.trim() || !note.title.trim()){
-            toast.error("Please add a title or content")
-            return
-        }
-        setSaving(true)
-        try {
-            await api.put(`/notes/${note._id}`, note)
-            toast.success("Updated the note")
-            navigate("/")
-        } catch (error) {
-            toast.error("Error updating the note")
-            console.log("error updating the note", error)
-        }finally{
-            setSaving(false)
-        }
+  useEffect(() => {
+    const fetchNote = async () => {
+      try {
+        const res = await api.get(`/notes/${id}`);
+        setNote(res.data);
+      } catch (error) {
+        console.log("error in fetching note", error);
+        toast.error("Failed to fetch the note");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNote();
+  }, []);
+
+  const handleSave = async () => {
+    if (!note.content.trim() || !note.title.trim()) {
+      toast.error("Please add a title or content");
+      return
     }
-
-    const handleDelete = async () => {
-        try {
-            if(!window.confirm("Are you sure you want to delete this note?"))return
-            await api.delete(`/notes/${id}`)
-            toast.success("Note successfully deleted")
-            navigate("/")
-        } catch (error) {
-            console.log("Error in deleting note", error)
-            toast.error("Failed to delete the note")
-        }
+    setSaving(true);
+    try {
+      await api.put(`/notes/${note._id}`, note);
+      toast.success("Updated the note");
+      navigate("/");
+    } catch (error) {
+      toast.error("Error updating the note");
+      console.log("error updating the note", error);
+    } finally {
+      setSaving(false);
     }
+  };
 
-
-    if (loading) {
-        console.log(loading)
-        return (
-        <div className="min-h-screen bg-base-200 flex items-center justify-center">
-            <LoaderIcon className="animate-spin size-10" />
-        </div>
-        );
+  const handleDelete = async () => {
+    try {
+      if (!window.confirm("Are you sure you want to delete this note?")) return;
+      await api.delete(`/notes/${id}`);
+      toast.success("Note successfully deleted");
+      navigate("/");
+    } catch (error) {
+      console.log("Error in deleting note", error);
+      toast.error("Failed to delete the note");
     }
+  };
+
+  if (loading) {
+    console.log(loading);
+    return (
+      <div className="min-h-screen bg-base-200 flex items-center justify-center">
+        <LoaderIcon className="animate-spin size-10" />
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-base-200">
       <div className="container mx-auto px-4 py-8">
@@ -77,7 +75,10 @@ const NoteDetailPage = () => {
               <ArrowLeftIcon className="h-5 w-5" />
               Back to Notes
             </Link>
-            <button onClick={handleDelete} className="btn btn-error btn-outline">
+            <button
+              onClick={handleDelete}
+              className="btn btn-error btn-outline"
+            >
               <Trash2Icon className="h-5 w-5" />
               Delete Note
             </button>
@@ -106,12 +107,18 @@ const NoteDetailPage = () => {
                   placeholder="Write your note here..."
                   className="textarea w-3/4 p-4 rounded-3xl h-32"
                   value={note.content}
-                  onChange={(e) => setNote({ ...note, content: e.target.value })}
+                  onChange={(e) =>
+                    setNote({ ...note, content: e.target.value })
+                  }
                 />
               </div>
 
               <div className="card-actions justify-end">
-                <button className="btn btn-primary" disabled={saving} onClick={handleSave}>
+                <button
+                  className="btn btn-primary"
+                  disabled={saving}
+                  onClick={handleSave}
+                >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
@@ -120,8 +127,7 @@ const NoteDetailPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NoteDetailPage
-
+export default NoteDetailPage;
